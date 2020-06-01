@@ -25,6 +25,10 @@ var MapPoints = map[string][]string{
 	"Split": {"A", "B"},
 }
 
+var (
+	version string
+)
+
 // Variables used for command line parameters
 var (
 	Token string
@@ -89,7 +93,7 @@ func messageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
 		response.Author = respAuthor
 
 		footer := &discordgo.MessageEmbedFooter{
-			Text: "Bot Created by davzo, write in Go with github.com/bwmarrin/discordgo",
+			Text: "Karéjone Training Bot " + version + " - Created by davzo",
 		}
 		response.Footer = footer
 		if len(command) > 1 {
