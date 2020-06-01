@@ -14,6 +14,13 @@ import (
 )
 
 var playerList map[string]string //id username
+
+type GameMap struct {
+	Name  string   `json:"name"`
+	Point []string `json:"point"`
+	URL   string   `json:"url"`
+}
+
 var maps = map[string]string{
 	"Bind":  "https://vignette.wikia.nocookie.net/valorant/images/4/4e/Bind.png",
 	"Haven": "https://vignette.wikia.nocookie.net/valorant/images/5/59/Haven.png",
@@ -59,6 +66,10 @@ func main() {
 		fmt.Println("error opening connection,", err)
 		return
 	}
+	/*game := &discordgo.Game{
+		Type: discordgo.GameType,
+		Name: ,
+	}*/
 
 	// Wait here until CTRL-C or other term signal is received.
 	fmt.Println("Bot is now running.  Press CTRL-C to exit.")
@@ -79,7 +90,12 @@ func messageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
 	if m.Author.ID == s.State.User.ID {
 		return
 	}
-	// check if the message is "!airhorn"
+	if set, err := s.UserSettings(); err != nil {
+		fmt.Print(err)
+	} else {
+		fmt.Print(set.EnableTtsCommand)
+	}
+
 	if strings.HasPrefix(m.Content, "+g") {
 		command := strings.Split(m.Content, " ")
 		response := &discordgo.MessageEmbed{
@@ -115,7 +131,7 @@ func messageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
 					if _, exist := playerList[m.Author.ID]; exist {
 						response.Title = "Le joueur existe déjà dans la liste"
 					} else {
-						response.Title = "Le joueur à été ajouté à la liste"
+						response.Title = "Le joueur a été ajouté à la liste"
 						playerList[m.Author.ID] = m.Author.Username
 					}
 				}
@@ -152,7 +168,7 @@ func messageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
 
 				}
 			case "flush":
-				response.Title = "La liste des joueur en attente a été purgé"
+				response.Title = "La liste des joueurs en attente a été purgée"
 				for k := range playerList {
 					delete(playerList, k)
 				}
@@ -213,26 +229,27 @@ func messageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
 
 			default:
 				response.Title = "Karéjone Training Bot Generator :woozy_face:"
-				response.Description = command[1] + " est commande non reconnue\n"
-				response.Description += "Syntaxe : +g <command>\n"
-				response.Description += "**Help**\n"
-				response.Description += "`add` : ajoute le joueur qui tape la commande dans la liste d'attente\n"
-				response.Description += "`list` : liste les joueurs en attente\n"
-				response.Description += "`del` : supprime le joueur qui tape la commande de la liste d'attente\n"
-				response.Description += "`flush` : purge la liste d'attente des joueur\n"
-				response.Description += "`generate` : génère une configuration de partie d'entrainement\n"
+				response.Description =
+					command[1] + ` est commande non reconnue"
+						Syntaxe : +g <command>"
+						**Help**
+						:arrow_right:` + "`add [@mention]`" + `: Ajoute des joueurs dans la liste d'attente, s'il n'y a pas de mention, cela ajoute le joueur qui a tapé la commande
+						:arrow_right:` + "`del [@mention]`" + `: Supprime des joueurs de la liste d'attente, s'il n'y a pas de mention, cela supprime le joueur qui a tapé la commande
+						:arrow_right:` + "`list`" + `: liste les joueurs en attente
+						:arrow_right:` + "`flush`" + `: purge la liste d'attente
+						:arrow_right:` + "`generate`" + `: génère une configuration de partie d'entrainement`
 			}
 
 		} else {
 			response.Title = "Karéjone Training Bot Generator :woozy_face:"
-			response.Description = "Syntaxe : +g <command>\n"
-			response.Description += "**Help**\n"
-			response.Description += "`help` : ajoute le joueur qui tape la commande dans la liste d'attente\n"
-			response.Description += "`add` : ajoute le joueur qui tape la commande dans la liste d'attente\n"
-			response.Description += "`list` : liste les joueurs en attente\n"
-			response.Description += "`del` : supprime le joueur qui tape la commande de la liste d'attente\n"
-			response.Description += "`flush` : purge la liste d'attente des joueur\n"
-			response.Description += "`generate` : génère une configuration de partie d'entrainement\n"
+			response.Description =
+				`Syntaxe : ` + "\n`+g <command>`" + `
+				**Help**
+				:arrow_right:` + "`add [@mention]`" + `: Ajoute des joueurs dans la liste d'attente, s'il n'y a pas de mention, cela ajoute le joueur qui a tapé la commande
+				:arrow_right:` + "`del [@mention]`" + `: Supprime des joueurs de la liste d'attente, s'il n'y a pas de mention, cela supprime le joueur qui a tapé la commande
+				:arrow_right:` + "`list`" + `: liste les joueurs en attente
+				:arrow_right:` + "`flush`" + `: purge la liste d'attente
+				:arrow_right:` + "`generate`" + `: génère une configuration de partie d'entrainement`
 		}
 		s.ChannelMessageSendEmbed(m.ChannelID, response)
 		if err := s.ChannelMessageDelete(m.ChannelID, m.Message.ID); err != nil {
