@@ -1,6 +1,7 @@
 package main
 
 import (
+	"flag"
 	"fmt"
 	"math/rand"
 	"os"
@@ -24,10 +25,21 @@ var MapPoints = map[string][]string{
 	"Split": {"A", "B"},
 }
 
+// Variables used for command line parameters
+var (
+	Token string
+)
+
+func init() {
+
+	flag.StringVar(&Token, "t", "", "Bot Token")
+	flag.Parse()
+}
+
 func main() {
 
 	// Create a new Discord session using the provided bot token.
-	dg, err := discordgo.New("Bot NzE2OTQ3MDIzMjY1Mzk4ODI1.XtTMrQ.cZ-rjnZy_WmEc0e6y0lPw_fHF5k")
+	dg, err := discordgo.New("Bot " + Token)
 	if err != nil {
 		fmt.Println("error creating Discord session,", err)
 		return
@@ -62,9 +74,6 @@ func messageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
 	// This isn't required in this specific example but it's a good practice.
 	if m.Author.ID == s.State.User.ID {
 		return
-	}
-	if !s.State.Settings.EnableTtsCommand {
-		fmt.Println(s.State.Settings.EnableTtsCommand)
 	}
 	// check if the message is "!airhorn"
 	if strings.HasPrefix(m.Content, "+g") {
