@@ -4,7 +4,7 @@
 
 install [Go](https://golang.org/)
 
-import [discordgo](github.com/bwmarrin/discordgo) package
+import [discordgo](https://github.com/bwmarrin/discordgo) package
 
 build with version number
 
