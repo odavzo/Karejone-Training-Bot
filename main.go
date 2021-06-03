@@ -22,14 +22,20 @@ type GameMap struct {
 }
 
 var maps = map[string]string{
-	"Bind":  "https://vignette.wikia.nocookie.net/valorant/images/4/4e/Bind.png",
-	"Haven": "https://vignette.wikia.nocookie.net/valorant/images/5/59/Haven.png",
-	"Split": "https://vignette.wikia.nocookie.net/valorant/images/4/41/Split.png",
+	"Bind":  "https://static.wikia.nocookie.net/valorant/images/2/23/Loading_Screen_Bind.png",
+	"Haven": "https://static.wikia.nocookie.net/valorant/images/7/70/Loading_Screen_Haven.png",
+	"Split": "https://static.wikia.nocookie.net/valorant/images/d/d6/Loading_Screen_Split.png",
+	"Icebox": "https://static.wikia.nocookie.net/valorant/images/3/34/Loading_Icebox.png",
+	"Ascent": "https://static.wikia.nocookie.net/valorant/images/e/e7/Loading_Screen_Ascent.png",
+	"Breeze": "https://static.wikia.nocookie.net/valorant/images/1/1e/Valorant_Loading_Breeze.png",
 }
 var MapPoints = map[string][]string{
 	"Bind":  {"A", "B"},
 	"Haven": {"A", "B", "C"},
 	"Split": {"A", "B"},
+	"Icebox" : {"A", "B"},
+	"Ascent": {"A", "B"},
+	"Breeze": {"A", "B"},
 }
 
 var (
@@ -66,10 +72,6 @@ func main() {
 		fmt.Println("error opening connection,", err)
 		return
 	}
-	/*game := &discordgo.Game{
-		Type: discordgo.GameType,
-		Name: ,
-	}*/
 
 	// Wait here until CTRL-C or other term signal is received.
 	fmt.Println("Bot is now running.  Press CTRL-C to exit.")
@@ -90,11 +92,11 @@ func messageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
 	if m.Author.ID == s.State.User.ID {
 		return
 	}
-	if set, err := s.UserSettings(); err != nil {
+	/*if set, err := s.UserSettings(); err != nil {
 		fmt.Print(err)
 	} else {
 		fmt.Print(set.EnableTtsCommand)
-	}
+	}*/
 
 	if strings.HasPrefix(m.Content, "+g") {
 		command := strings.Split(m.Content, " ")
